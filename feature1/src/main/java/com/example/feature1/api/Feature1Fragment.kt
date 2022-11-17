@@ -9,28 +9,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.core.Dependencies
 import com.example.core.findDependencies
 import com.example.feature1.R
-import com.example.feature1.internal.di.DaggerFeature1Component
-import javax.inject.Inject
+import com.example.feature1.internal.di.Feature1ComponentImpl
 
 class Feature1Fragment : Fragment() {
 
-    @Inject
-    internal lateinit var logger: Feature1Logger
+    private lateinit var logger: Feature1Logger
 
-    @Inject
-    internal lateinit var captionProvider: Feature1CaptionProvider
+    private lateinit var captionProvider: Feature1CaptionProvider
 
     private var caption: TextView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        DaggerFeature1Component.factory()
-            .create(findDependencies())
-            .inject(this)
+        val component = Feature1ComponentImpl(findDependencies())
+        logger = component.feature1Logger
+        captionProvider = component.feature1CaptionProvider
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,4 +62,4 @@ class Feature1Fragment : Fragment() {
     }
 }
 
-internal class UnavailableDependencies : Dependencies
+internal class UnavailableDependencies

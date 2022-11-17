@@ -5,23 +5,19 @@ import android.app.Application
 import androidx.fragment.app.Fragment
 
 
-interface Dependencies
-
-typealias DepsMap = Map<Class<out Dependencies>, @JvmSuppressWildcards Dependencies>
-
 interface HasDependencies {
-    val depsMap: DepsMap
+    fun <D> getDeps(dependencies: Class<D>): D?
 }
 
-inline fun <reified D : Dependencies> Fragment.findDependencies(): D {
+inline fun <reified D> Fragment.findDependencies(): D {
     return findDependenciesByClass(D::class.java)
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <D : Dependencies> Fragment.findDependenciesByClass(clazz: Class<D>): D {
+fun <D> Fragment.findDependenciesByClass(clazz: Class<D>): D {
     return parents
-        .mapNotNull { it.depsMap[clazz] }
-        .firstOrNull() as D?
+        .mapNotNull { it.getDeps(clazz) }
+        .firstOrNull()
         ?: throw IllegalStateException("No Dependencies $clazz in ${allParents.joinToString()}")
 }
 

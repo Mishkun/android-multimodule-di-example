@@ -4,37 +4,28 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.core.DepsMap
 import com.example.core.HasDependencies
 import com.example.feature1.api.Feature1CaptionProvider
 import com.example.feature1.api.Feature1Fragment
 import com.example.feature2.api.Feature2Fragment
 import com.example.feature3_no_ui.api.Notifier
-import com.example.multimoduleappexample.di.DaggerMainActivityComponent
-import com.example.multimoduleappexample.di.MainActivityScope
-import javax.inject.Inject
+import com.example.multimoduleappexample.di.MainActivityComponentImpl
 
 class MainActivity : AppCompatActivity(), HasDependencies {
 
-    @Inject
-    override lateinit var depsMap: DepsMap
+    private val component = MainActivityComponentImpl(this)
+    override fun <D> getDeps(dependencies: Class<D>): D? = component as? D
 
-    @Inject
     lateinit var feature1CaptionProvider: Feature1CaptionProviderImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DaggerMainActivityComponent.factory()
-            .create(context = this)
-            .inject(this)
-
-
+        feature1CaptionProvider = component.feature1CaptionProviderImpl
         setContentView(R.layout.activity_main)
 
         setupFeature1()
@@ -60,10 +51,13 @@ class MainActivity : AppCompatActivity(), HasDependencies {
             .addToBackStack(null)
             .commit()
     }
+
+    interface Dependencies {
+        val feature1CaptionProviderImpl: Feature1CaptionProviderImpl
+    }
 }
 
-@MainActivityScope
-class Feature1CaptionProviderImpl @Inject constructor(private val notifier: Notifier) : Feature1CaptionProvider, TextWatcher {
+class Feature1CaptionProviderImpl(private val notifier: Notifier) : Feature1CaptionProvider, TextWatcher {
     private var prevGrabbedCaption: String? = null
     override var caption: String = ""
         get() {

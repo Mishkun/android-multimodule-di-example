@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-kapt'
+
 }
 
 android {
@@ -36,13 +36,12 @@ android {
 dependencies {
 
     implementation project(":core")
-    implementation project(":core-dagger")
     implementation project(":feature1")
     implementation project(":feature2")
     implementation project(":feature3-no-ui")
 
-    implementation 'com.google.dagger:dagger:2.34'
-    kapt 'com.google.dagger:dagger-compiler:2.34'
+
+
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.2.0'

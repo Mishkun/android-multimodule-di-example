@@ -1,8 +1,6 @@
 package com.example.feature1.api
 
-import com.example.core.Dependencies
-
-interface Feature1Dependencies: Dependencies {
+interface Feature1Dependencies {
     val feature1Logger: Feature1Logger
     val feature1CaptionProvider: Feature1CaptionProvider
 }
