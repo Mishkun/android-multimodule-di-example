@@ -1,15 +1,18 @@
 package com.example.feature3_no_ui.internal.di
 
+import com.example.feature3_no_ui.api.Notifier
 import com.example.feature3_no_ui.api.NotifierDependencies
+import com.example.feature3_no_ui.api.NotifierComponent
+import com.example.feature3_no_ui.internal.LogNotifier
 import com.example.feature3_no_ui.internal.NotifierImpl
-import dagger.Component
+import com.example.feature3_no_ui.internal.NotifierLevelConverter
+import com.example.feature3_no_ui.internal.ToasterNotifier
 
-@Component(dependencies = [NotifierDependencies::class])
-internal interface NotifierComponent {
-    @Component.Factory
-    interface Factory {
-        fun create(deps: NotifierDependencies): NotifierComponent
-    }
-
-    val impl: NotifierImpl
+class NotifierComponentImpl(deps: NotifierDependencies) :
+    NotifierDependencies by deps,
+    NotifierComponent,
+    NotifierImpl.Dependencies {
+    override val logNotifier: LogNotifier get() = LogNotifier(NotifierLevelConverter())
+    override val toasterNotifier: ToasterNotifier get() = ToasterNotifier(context, NotifierLevelConverter())
+    override val notifier: Notifier = NotifierImpl(this)
 }

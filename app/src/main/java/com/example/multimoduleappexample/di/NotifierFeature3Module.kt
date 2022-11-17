@@ -1,22 +1,15 @@
 package com.example.multimoduleappexample.di
 
+import android.content.Context
 import com.example.feature3_no_ui.api.Notifier
-import com.example.feature3_no_ui.api.NotifierFactory
+import com.example.feature3_no_ui.api.NotifierDependencies
 import com.example.feature3_no_ui.api.NotifierInteractivityProvider
-import dagger.Module
-import dagger.Provides
+import com.example.feature3_no_ui.internal.di.NotifierComponentImpl
 
-@Module
-object NotifierFeature3Module {
+class NotifierFeature3Module(override val context: Context) : NotifierDependencies {
 
-    @Provides
-    @MainActivityScope
-    fun interactivityProvider(): NotifierInteractivityProvider = object : NotifierInteractivityProvider {
+    override val notifierInteractivityProvider: NotifierInteractivityProvider = object : NotifierInteractivityProvider {
         override val interactivity = Notifier.Interactivity.Both(logTag = "Main")
-
     }
-
-    @Provides
-    @MainActivityScope
-    fun notifier(depsImpl: MainActivityComponent): Notifier = NotifierFactory.create(depsImpl)
+    val notifier = NotifierComponentImpl(this).notifier
 }

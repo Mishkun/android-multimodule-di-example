@@ -8,20 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.core.findDependencies
 import com.example.feature2.R
-import com.example.feature2.internal.di.DaggerFeature2Component
-import javax.inject.Inject
+import com.example.feature2.internal.di.Feature2ComponentImpl
 
 class Feature2Fragment : Fragment() {
 
-    @Inject
     internal lateinit var otherFeatureFragmentProvider: Feature2OtherFeatureFragmentProvider
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        DaggerFeature2Component.factory()
-            .create(findDependencies())
-            .inject(this)
+        val componentImpl = Feature2ComponentImpl(findDependencies())
+        otherFeatureFragmentProvider = componentImpl.otherFeatureFragmentProvider
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -3,6 +3,5 @@ include ':feature3-no-ui'
 include ':feature1'
 include ':feature2'
 include ':core'
-include ':core-dagger'
 include ':app'
 rootProject.name = "MultiModuleAppExample"
